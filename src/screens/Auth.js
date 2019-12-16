@@ -17,6 +17,7 @@ console.warn = message => {
         _console.warn(message);
     }
 };
+import { AccessToken, GraphRequest, GraphRequestManager } from 'react-native-fbsdk'
 
 class AuthScreen extends Component {
     static navigationOptions = {
@@ -24,17 +25,18 @@ class AuthScreen extends Component {
     }
     constructor(props) {
         super(props);
-        this.state = { userName: '', UserId: '', ProfileURL: '', fontLoaded: false };
+        this.state = { userName: '', UserId: '', ProfileURL: '', fontLoaded: false , picture : '' };
     }
 
 
     async componentDidMount() {
-        firebase.auth().onAuthStateChanged((user) => {
+        firebase.auth().onAuthStateChanged( (user) => {
             if (user != null) {
+              
                
             }
         });
-
+      
 
         await Font.loadAsync({
             'ralewayRegular': require('../assets/fonts/Raleway-Regular.ttf'),
@@ -54,7 +56,13 @@ async loginWithFacebook() {
         if (type === 'success') {
             // Build Firebase credential with the Facebook access token.
             const credential = firebase.auth.FacebookAuthProvider.credential(token);
+            const response = await fetch(
+                `https://graph.facebook.com/me?access_token=${token}&fields=id,name,birthday,picture.type(large)`
+              );
+              const userInfo = await response.json();
+            //   console.log('--->',userInfo)
 
+            //   console.log('--->',userInfo.picture.data.url)
             // Sign in with credential from the Facebook user.
             firebase.auth().signInWithCredential(credential).then((res) => {
                 // this.props.navigation.navigate('MainScreen')
@@ -63,7 +71,9 @@ async loginWithFacebook() {
 
                 const userName = res.user.displayName;
                 const UserUid = res.user.uid;
-                const ProfileURL = res.user.photoURL;
+                const ProfileURL = userInfo.picture.data.url;
+                const Birthday = userInfo.birthday
+                console.log('PROFILEURL=---->' , ProfileURL)
                 const deviceInfo = Constants.deviceName
                 fire.database().ref('Users/' + UserUid).update({
                     userName,
@@ -73,7 +83,7 @@ async loginWithFacebook() {
                             .then(() => {
                                 fire.database().ref('Users/' + UserUid+'/'+ 'devices/' + deviceInfo).set({deviceInfo , token}).then(()=>{
                                     console.log("Your profile has been created");
-                                         this.props.navigation.navigate('Home', {userId :UserUid ,  Name : userName , userProfile : ProfileURL , UserToken : token , deviceinfo : deviceInfo });
+                                         this.props.navigation.navigate('Home', {userId :UserUid , Birthday : Birthday,  Name : userName , userProfile : ProfileURL , UserToken : token , deviceinfo : deviceInfo });
                                 }).catch((e)=>{
                                     var errorMessage = error.message;
                                     console.log(errorMessage);
@@ -95,6 +105,7 @@ async loginWithFacebook() {
 
 
     render() {
+        console.log('GraphURL--->' , this.state.picture)
         return this.state.fontLoaded ? (
             <ImageBackground source={require('../assets/images/map.jpg')} style={styles.backgroundImg} imageStyle={{ opacity: 0.1 }}>
                 <View style={styles.container}>

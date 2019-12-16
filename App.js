@@ -2,6 +2,10 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Navigation from './src/config/navigation'
 import Constants from 'expo-constants';
+
+import { YellowBox } from 'react-native';
+YellowBox.ignoreWarnings(['Remote debugger']);
+
 export default function App() {
   return (
     <View style={styles.container}>
@@ -18,7 +22,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   statusBar: {
-    backgroundColor: "#2e363d",
+    backgroundColor: '#333846',
     paddingTop: Constants.statusBarHeight,
   },
 });

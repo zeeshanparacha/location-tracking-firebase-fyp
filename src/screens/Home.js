@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import {
-    StyleSheet, Text, View, Platform, Dimensions, SafeAreaView, Keyboard, TouchableWithoutFeedback, ToastAndroid, Alert
-    , Modal, TouchableHighlight,
+    StyleSheet, Text, View, Platform, Dimensions, SafeAreaView, Keyboard, TouchableWithoutFeedback, ToastAndroid, Alert, TouchableHighlight, Image
 } from 'react-native';
 import * as Location from 'expo-location';
 import Constants from 'expo-constants';
@@ -16,9 +15,8 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import fire from '../config/firebase';
 import { Notifications } from 'expo';
 import * as Permissions from 'expo-permissions';
-import ScreenChild from '../screens/Crimeinfo';
 
-import PushNotification from '../assets/components/pushnotification.js';
+import Modal from "react-native-modal";
 
 
 // import { YellowBox } from 'react-native';
@@ -240,18 +238,22 @@ class HomeScreen extends Component {
             ProfileURL: '',
             deviceInfo: '',
             visiblemodal: true,
+            markers: [],
+            placemarkers: [],
+            isModalVisible: true
 
         };
         this._getLocationAsync = this._getLocationAsync.bind(this)
         this.onMapRegionChange = this.onMapRegionChange.bind(this)
         this._onLongPressButton = this._onLongPressButton.bind(this)
-    
+
         this.sendNotification = this.sendNotification.bind(this)
-        
+    
+
     }
 
-    _showModal = () => this.setState({ visible: true });
-    _hideModal = () => this.setState({ visible: false });
+    // _showModal = () => this.setState({ visible: true });
+    // _hideModal = () => this.setState({ visible: false });
 
     registerForPushNotificationAsync = async () => {
         const { status: existingStatus } = await Permissions.getAsync(
@@ -311,6 +313,7 @@ class HomeScreen extends Component {
         const ProfileURL = this.props.navigation.getParam('userProfile', 'NO-ID')
         const UserToken = this.props.navigation.getParam('UserToken', 'NO-ID')
         const deviceInfo = this.props.navigation.getParam('deviceinfo', 'NO-ID')
+        
 
         this.setState({ fontLoaded: true, userName, UserId, ProfileURL, UserToken, deviceInfo });
 
@@ -368,7 +371,7 @@ class HomeScreen extends Component {
     sendNotification() {
         // <ScreenChild navigation={this.props.navigation} />
 
-        const {userName, UserId, ProfileURL, UserToken } = this.state;
+        const { userName, UserId, ProfileURL, UserToken } = this.state;
 
         let TokenArr = []
         let locationcoords = [];
@@ -413,7 +416,7 @@ class HomeScreen extends Component {
                         },
                         body: JSON.stringify({
                             to: TokenArr[i],
-                            body: "Avoid Location : " + `${locationName ? locationName : locationStreet}` + "," + locationcity,
+                            body: "Avoid Location: St# " + " " + `${locationStreet}` + ", " + locationcity,
                             title: 'Robbery Alert !!',
                             sound: 'default',
 
@@ -421,28 +424,59 @@ class HomeScreen extends Component {
                     });
                 }
 
-                Alert.alert(
-                    'Notification Generated..',
-                    'Do you want to put some details now?',
-                    [
-                      { text: 'NOW',  onPress: () => this.onDeleteBTN},
-                     
-                      {text: 'OK', onPress: this.onDeleteBTN},
-                    ],
-                    { cancelable: false }
-                  );
 
             })
+        }).then(() => {
+
+            Alert.alert(
+                'Notification Generated..',
+                'Do you want to put some details now?',
+                [
+                    { text: 'NOW', onPress: this.goToCrimeInfo },
+
+                    { text: 'LATER', onPress: this.showCrimeMarkers },
+                ],
+                { cancelable: false }
+            );
+
+            TokenArr = ''
         });
 
 
 
     }
+    goToCrimeInfo = () => {
    
-    onDeleteBTN = () => {
-        this.alert(' OnDelete')
-        console.log('.....')
-      }
+        this.props.navigation.navigate('CrimeInfo', {userId :this.state.UserId ,  Name : this.state.userName , userProfile : this.state.ProfileURL , UserToken : this.state.UserToken , deviceinfo : this.state.deviceInfo });
+        console.log('crimeinfoo----->')
+    }
+    showCrimeMarkers = () => {
+        let AlertArr = []
+        let placemarkers = []
+        let coordinates = {}
+        fire.database().ref('allAlerts/').once("value", function (data) {
+            console.log('allAlerts--->', data.val())
+            let AlertData = data.val()
+            for (var key in AlertData) {
+                console.log('---->', AlertData[key].location)
+                //  console.log('lat---->' , AlertData[key].location.marker_lat)
+                let latitude = AlertData[key].location.marker_lat
+                let longitude = AlertData[key].location.marker_long
+
+                coordinates = {
+                    latitude: latitude,
+                    longitude: longitude
+                }
+                AlertArr.push({ coordinates })
+                placemarkers.push(coordinates)
+
+            }
+        }).then(()=>{
+            this.setState({ markers: AlertArr, placemarkers , isModalVisible: false })
+        
+        })
+        
+    }
 
     _onLongPressButton() {
         const { marker_lat, marker_long, regionName, expoToken, userName, UserId, ProfileURL, UserToken } = this.state;
@@ -473,32 +507,95 @@ class HomeScreen extends Component {
 
     }
 
-    render() {
+    // toggleModal = () => {
+    //     this.setState({ isModalVisible: !this.state.isModalVisible });
+    //   };
 
+ toBack = () => {
+        this.setState({markers : '' , isModalVisible : true})
+ }
+
+    // showModal(){
+    //     <View style={{ flex: 1 }}>
+    //     <Modal isVisible={this.state.isModalVisible}>
+    //       <View style={{ flex: 1 }}>
+    //         <Text>Hello!</Text>
+    //         <Button title="Hide modal" onPress={this.toggleModal} />
+    //       </View>
+    //     </Modal>
+    //   </View>
+    // }
+
+    render() {
+        console.log('UserName---->', this.state.userName)
         return this.state.fontLoaded && this.state.regionName ? (
             <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
                 <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }} keyboardShouldPersistTaps="always">
                     <View style={styles.wrapper}>
                         <Toast style={{ backgroundColor: '#2d3441BF', borderRadius: 0, color: '#fff', fontFamily: 'ralewayRegular', fontSize: 16, }} visible={this.state.visible} message="Hold on a second." />
-                        <MapView style={StyleSheet.absoluteFillObject}
-                            region={this.state.region}
-                            initialRegion={this.state.region}
-                            customMapStyle={mapStyle}
-                        >
-                            <Marker
-                                ref={marker => {
-                                    this.marker = marker;
-                                }}
-                                coordinate={{
-                                    latitude: this.state.marker_lat,
-                                    longitude: this.state.marker_long
-                                }}
-                            />
 
-                        </MapView>
+                        {this.state.markers.length > 0 ?
+                            <MapView style={{
+                                position: 'absolute',
+                                top: 0,
+                                left: 0,
+                                right: 0,
+                                bottom: 0,
+                            }}
+                                ref={mapRef => mapRef === null ? null : mapRef.fitToElements(true)}
 
+                                customMapStyle={mapStyle}
+                                followUserLocation={true}
+                                zoomEnabled={true}
+                                onLayout={() => this.mapRef.fitToCoordinates(this.state.placemarkers, { edgePadding: { top: 50, right: 10, bottom: 10, left: 10 }, animated: false })}
+                                 >
+                                {this.state.markers.map((mark, index) => (
+                                    <Marker key={index}
+                                        ref={marker => {
+                                            this.marker = marker;
+                                        }}
 
-                        <View style={{ position: 'absolute', top: 28, left: 27, width: '85%' }}>
+                                        coordinate={mark.coordinates}
+                                    >
+                                        {/* <Image source={require('../assets/images/loc.png')} style={{ width: 40, height: 40 }} /> */}
+                                    </Marker>
+                                ))}
+                            </MapView> :
+                            <MapView style={{
+                                position: 'absolute',
+                                top: 0,
+                                left: 0,
+                                right: 0,
+                                bottom: 0,
+                            }}
+                                ref={map => { this.map = map }}
+                                region={this.state.region}
+                                initialRegion={this.state.region}
+                                customMapStyle={mapStyle}
+                                followUserLocation={true}
+                                zoomEnabled={true}
+                            >
+                                <Marker
+                                    ref={marker => {
+                                        this.marker = marker;
+                                    }}
+                                    coordinate={{
+                                        latitude: this.state.marker_lat,
+                                        longitude: this.state.marker_long
+                                    }}
+                                    title={'Current Location'}
+                                />
+                            </MapView>
+                        }
+
+                      {!this.state.isModalVisible && <View style={{ position: 'absolute', top: 10, left: 10, }}> 
+                      <TouchableOpacity style={{flexDirection : 'row'}} onPress={this.toBack}>
+                        <Ionicons name="ios-arrow-back" size={22} color="white" /> 
+                        <Text style={{fontFamily: 'ralewayRegular', fontSize: 14 , color : 'white' , paddingLeft : 7 , paddingTop : 4}}>Back</Text>   
+                      </TouchableOpacity>
+                          
+                    </View>}
+                        {this.state.isModalVisible && <View style={{ position: 'absolute', top: 28, left: 27, width: '85%' }}>
                             <GooglePlacesAutocomplete
                                 placeholder='Search Location...'
                                 minLength={2}
@@ -576,7 +673,7 @@ class HomeScreen extends Component {
 
                                         color: 'white',
                                         // and the absolute position.
-                                        zIndex: 500,
+
                                     },
                                     description: {
                                         color: "white",
@@ -604,8 +701,8 @@ class HomeScreen extends Component {
                                 renderLeftButton={() => <MaterialIcons style={{ paddingTop: 15 }} name="my-location" size={20} color="white" />}
                             />
 
-                        </View>
-                        <View style={{ position: 'absolute', bottom: 26, left: 27, width: '85%', backgroundColor: '#333846', padding: 18, elevation: 1 }}>
+                        </View>}
+                        {this.state.isModalVisible && <View style={{ position: 'absolute', bottom: 26, left: 27, width: '85%', backgroundColor: '#333846', padding: 18, elevation: 1 }}>
 
                             <View style={{ flexDirection: 'row', }}>
                                 <View style={{ flex: 1 }}>
@@ -627,12 +724,13 @@ class HomeScreen extends Component {
                                 </View>
                             </View>
                             <View style={{ justifyContent: 'center', textAlign: 'center', alignItems: 'center', flexDirection: 'column', paddingTop: 8, width: '100%' }}>
-                                <TouchableOpacity style={{ borderColor: '#d98e3c', color: 'white', paddingTop: 6, paddingBottom: 8, paddingLeft: 2, paddingRight: 2, alignItems: "center", textAlign: 'center' }}
+                                <TouchableOpacity style={{ borderColor: '#5d616f', borderWidth: 1, color: 'white', paddingTop: 10, paddingBottom: 10, paddingLeft: 18, paddingRight: 18, alignItems: "center", textAlign: 'center' }}
                                     onPress={this.handleButtonPress} onLongPress={this._onLongPressButton}>
-                                    <Text style={{ color: 'white', fontFamily: 'ralewayRegular', fontSize: 16, fontWeight: 'bold', letterSpacing: 1.2, textTransform: 'uppercase' }}> Robbed <MaterialCommunityIcons name="pirate" size={30} color="#fff" /></Text>
+                                    <Text style={{ color: 'white', fontFamily: 'ralewayRegular', fontSize: 16, letterSpacing: 1.2, }}> Robbed <MaterialCommunityIcons name="pirate" size={18} color="#fff" /></Text>
                                 </TouchableOpacity>
                             </View>
-                        </View>
+                        </View>}
+
                     </View >
                 </SafeAreaView>
             </TouchableWithoutFeedback>
@@ -648,12 +746,12 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     wrapper: {
-        ...StyleSheet.absoluteFill,
+        zIndex: -1,//...StyleSheet.absoluteFill,
         flex: 1,
         paddingTop: Constants.statusBarHeight,
     },
     statusBar: {
-        backgroundColor: "#2e363d",
+        backgroundColor: '#333846',
         paddingTop: Constants.statusBarHeight,
     },
 });
