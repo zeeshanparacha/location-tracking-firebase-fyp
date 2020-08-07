@@ -534,21 +534,8 @@ class HomeScreen extends Component {
         this.setState({ markers: '', isModalVisible: true })
     }
 
-    // showModal(){
-    //     <View style={{ flex: 1 }}>
-    //     <Modal isVisible={this.state.isModalVisible}>
-    //       <View style={{ flex: 1 }}>
-    //         <Text>Hello!</Text>
-    //         <Button title="Hide modal" onPress={this.toggleModal} />
-    //       </View>
-    //     </Modal>
-    //   </View>
-    // }
-
     render() {
-        //('UserName---->', this.state.userName)
         const { visible } = this.state;
-
         return (
             this.state.visible ?
                 <View style={styles.animationContainer}>
@@ -557,8 +544,8 @@ class HomeScreen extends Component {
                             this.animation = animation;
                         }}
                         style={{
-                            width: 150,
-                            height: 150
+                            width: 140,
+                            height: 140
                         }}
                         source={require('../assets/animation/location.json')}
                     // OR find more Lottie files @ https://lottiefiles.com/featured

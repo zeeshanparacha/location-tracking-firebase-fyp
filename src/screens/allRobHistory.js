@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, TextInput, ImageBackground, Image, ScrollView, Alert } from 'react-native';
 import { Icon, Button, Container, Header, Content, Left, Body, Right, Card, CardItem, } from 'native-base'
-import { AntDesign, MaterialIcons, FontAwesome, Feather } from '@expo/vector-icons';
+import { AntDesign, MaterialIcons, FontAwesome, Feather, Fontisto } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import * as Font from 'expo-font';
 import fire from '../config/firebase';
@@ -376,7 +376,7 @@ class allRobHistory extends Component {
                                 <View style={{ paddingLeft: 10, paddingRight: 10, paddingTop: 4 }}>
                                     <View style={{ flexDirection: 'row' }}>
                                         <Text style={{ color: '#5d616f', fontSize: 12, justifyContent: 'flex-start', fontFamily: 'ralewayRegular', paddingLeft: 1, paddingBottom: 4 }}>•{mark.street},{mark.city} •</Text>
-                                        <MaterialIcons name="earth" size={13} color='#5d616f' />
+                                        <Fontisto name="earth" size={13} color='#5d616f' />
 
                                     </View>
                                     {mark.description.length > 0 ? <View style={{ paddingTop: 4, paddingBottom: 10 }}>

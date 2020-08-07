@@ -12,6 +12,9 @@ export default function App() {
       <StatusBar
         backgroundColor="#2e363d"
         barStyle="light-content"
+        hidden={false}
+        translucent={true}
+        networkActivityIndicatorVisible={true}
       />
       <Navigation />
     </View>

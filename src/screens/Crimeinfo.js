@@ -74,76 +74,84 @@ class Crimeinfo extends Component {
 
     render() {
         return this.state.fontLoaded ? (
-            <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-                <KeyboardAwareScrollView
-                    // enableOnAndroid
-                    // enableAutomaticScroll
-                    keyboardOpeningTime={0}
-                // extraHeight={Platform.select({ android: 400 })}
-                >
-                    <Container>
-                        <Header style={{ backgroundColor: '#333846', height: 46, fontFamily: 'ralewayRegular' }}>
-                            <Left style={{ flex: 1 }}>
-                                <Icon name='ios-menu' style={{ color: '#fff' }} onPress={() =>
-                                    this.props.navigation.toggleDrawer()} />
-                            </Left>
-                            <Body style={{ flex: 1 }}>
-                                <View style={{ flexDirection: 'row' }}>
-                                    <Text style={{}}><MaterialIcons name="my-location" size={28} color="white" /></Text>
-                                    <Text style={{ fontSize: 16, fontFamily: 'ralewayRegular', color: 'white', letterSpacing: 1.2, paddingTop: 4, }}>CITIZEN</Text>
+            <View style={{ backgroundColor: '#2e363d', flex: 1 }}>
+                <StatusBar
+                    backgroundColor="#2e363d"
+                    barStyle="light-content"
+                    hidden={false}
+                    translucent={true}
+                    networkActivityIndicatorVisible={true}
+                />
+                <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+                    <KeyboardAwareScrollView
+                        // enableOnAndroid
+                        // enableAutomaticScroll
+                        keyboardOpeningTime={0}
+                    // extraHeight={Platform.select({ android: 400 })}
+                    >
+                        <Container style={{ backgroundColor: '#fff', flex: 1, fontFamily: 'ralewayRegular' }}>
+                            <Header style={{ backgroundColor: '#333846', height: 46, fontFamily: 'ralewayRegular' }}>
+                                <Left style={{ flex: 1 }}>
+                                    <Icon name='ios-menu' style={{ color: '#fff' }} onPress={() =>
+                                        this.props.navigation.toggleDrawer()} />
+                                </Left>
+                                <Body style={{ flex: 1 }}>
+                                    <View style={{ flexDirection: 'row' }}>
+                                        <Text style={{}}><MaterialIcons name="my-location" size={28} color="white" /></Text>
+                                        <Text style={{ fontSize: 16, fontFamily: 'ralewayRegular', color: 'white', letterSpacing: 1.2, paddingTop: 4, }}>CITIZEN</Text>
+                                    </View>
+                                </Body>
+                                <Right style={{ flex: 1 }} />
+
+                            </Header>
+
+                            <View style={{ flex: 1, fontFamily: 'ralewayRegular', justifyContent: 'center', alignItems: 'center', flex: 1, backgroundColor: '#fff', opacity: 0.9 }}>
+                                <View style={{ paddingTop: 30, paddingBottom: 30, width: 300, padding: 18, shadowOffset: { height: 1, width: 1 }, shadowOpacity: 1, elevation: 1 }}>
+                                    <ScrollView contentContainerStyle={{ flexGrow: 1, }}>
+                                        <View style={{ justifyContent: 'center', alignItems: 'center', alignSelf: 'center' }}>
+                                            <Image source={require('../assets/images/message.png')} style={{ width: 200, height: 200, }} />
+                                        </View>
+                                        <View style={{ flexDirection: 'row', marginTop: 8, marginBottom: 14 }}>
+                                            <Text style={{ fontFamily: 'ralewayRegular', fontSize: 36, color: '#333846' }}>Hey!</Text>
+                                            <Text style={{ fontFamily: 'ralewayRegular', fontSize: 14, alignSelf: 'flex-end', paddingLeft: 5, color: '#333846' }}>Help us to find criminals...</Text>
+                                        </View>
+                                        <View style={{ borderBottomColor: '#333846', color: '#f2f3f5', backgroundColor: '#f2f3f5', borderBottomWidth: 1, marginBottom: 10, paddingTop: 8, paddingBottom: 8, fontFamily: 'ralewayRegular' }}>
+                                            <DatePicker
+                                                defaultDate={new Date(2020, 12, 24)}
+                                                minimumDate={new Date(2018, 1, 1)}
+                                                maximumDate={new Date(2050, 12, 30)}
+                                                locale={"en"}
+                                                timeZoneOffsetInMinutes={undefined}
+                                                modalTransparent={false}
+                                                animationType={"fade"}
+                                                androidMode={"default"}
+
+                                                textStyle={{ color: "#5d616f", fontFamily: 'ralewayRegular' }}
+                                                // placeHolderTextStyle={{ color: "#d3d3d3" }}
+                                                onDateChange={this.setDate}
+                                                disabled={false}
+                                            />
+                                        </View>
+                                        <View style={{ borderBottomColor: '#333846', borderBottomWidth: 1, color: '#222222', backgroundColor: '#f2f3f5' }}>
+                                            <Textarea rowSpan={5} value={this.state.description} placeholderTextColor="#5d616f" placeholder="What Happened?" style={{ paddingTop: 8, color: '#222222', fontFamily: 'ralewayRegular' }} onChangeText={(text) => { this.setState({ description: text }) }} />
+                                        </View>
+                                        <View style={{ marginTop: 10, marginBottom: 20 }}>
+                                            <TouchableOpacity style={{ backgroundColor: '#333846', paddingTop: 14, paddingBottom: 14 }}
+                                                onPress={() => this.submitForm()}
+                                            >
+                                                <Text style={{ color: 'white', marginLeft: 5, fontSize: 15, textAlign: 'center', fontFamily: 'ralewayRegular' }}>Submit</Text>
+                                            </TouchableOpacity>
+                                        </View>
+                                    </ScrollView>
                                 </View>
-                            </Body>
-                            <Right style={{ flex: 1 }} />
 
-                        </Header>
 
-                        <View style={{ flex: 1, fontFamily: 'ralewayRegular', justifyContent: 'center', alignItems: 'center', flex: 1, backgroundColor: '#fff', opacity: 0.9 }}>
-                            <View style={{ paddingTop: 30, paddingBottom: 30, width: 300, padding: 18, shadowOffset: { height: 1, width: 1 }, shadowOpacity: 1, elevation: 1 }}>
-                                <ScrollView contentContainerStyle={{ flexGrow: 1, }}>
-                                    <View style={{ justifyContent: 'center', alignItems: 'center', alignSelf: 'center' }}>
-                                        <Image source={require('../assets/images/logo.png')} style={{ width: 200, height: 200, borderRadius: 75, shadowOffset: { height: 2, width: 2 }, shadowOpacity: 2, borderWidth: 1, borderColor: '#f2f3f5' }} />
-                                    </View>
-                                    <View style={{ flexDirection: 'row', marginTop: 8, marginBottom: 14 }}>
-                                        <Text style={{ fontFamily: 'ralewayRegular', fontSize: 36, color: '#333846' }}>Hey!</Text>
-                                        <Text style={{ fontFamily: 'ralewayRegular', fontSize: 14, alignSelf: 'flex-end', paddingLeft: 5, color: '#333846' }}>Help us to find criminals...</Text>
-                                    </View>
-                                    <View style={{ borderBottomColor: '#333846', color: '#f2f3f5', backgroundColor: '#f2f3f5', borderBottomWidth: 1, marginBottom: 10, paddingTop: 8, paddingBottom: 8, fontFamily: 'ralewayRegular' }}>
-                                        <DatePicker
-                                            defaultDate={new Date(2019, 12, 24)}
-                                            minimumDate={new Date(2018, 1, 1)}
-                                            maximumDate={new Date(2050, 12, 30)}
-                                            locale={"en"}
-                                            timeZoneOffsetInMinutes={undefined}
-                                            modalTransparent={false}
-                                            animationType={"fade"}
-                                            androidMode={"default"}
-
-                                            textStyle={{ color: "#5d616f", fontFamily: 'ralewayRegular' }}
-                                            // placeHolderTextStyle={{ color: "#d3d3d3" }}
-                                            onDateChange={this.setDate}
-                                            disabled={false}
-                                        />
-                                    </View>
-                                    <View style={{ borderBottomColor: '#333846', borderBottomWidth: 1, color: '#222222', backgroundColor: '#f2f3f5' }}>
-                                        <Textarea rowSpan={5} value={this.state.description} placeholderTextColor="#5d616f" placeholder="What Happened?" style={{ paddingTop: 8, color: '#222222', fontFamily: 'ralewayRegular' }} onChangeText={(text) => { this.setState({ description: text }) }} />
-                                    </View>
-                                    <View style={{ marginTop: 10, marginBottom: 20 }}>
-                                        <TouchableOpacity style={{ backgroundColor: '#333846', paddingTop: 14, paddingBottom: 14 }}
-                                            onPress={() => this.submitForm()}
-                                        >
-                                            <Text style={{ color: 'white', marginLeft: 5, fontSize: 15, textAlign: 'center', fontFamily: 'ralewayRegular' }}>Submit</Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                </ScrollView>
                             </View>
 
-
-                        </View>
-
-                    </Container >
-                </KeyboardAwareScrollView>
-            </TouchableWithoutFeedback>
-
+                        </Container >
+                    </KeyboardAwareScrollView>
+                </TouchableWithoutFeedback>
+            </View>
         ) : null;
     }
 }

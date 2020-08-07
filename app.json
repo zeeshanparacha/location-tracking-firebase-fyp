@@ -12,12 +12,8 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/deer.png",
-    "androidStatusBar": {
-      "barStyle": "light-content",
-      "backgroundColor": "#2e363d"
-    },
     "splash": {
-      "image": "./assets/splash.PNG",
+      "image": "./assets/company.png",
       "backgroundColor": "#ffffff"
     },
     "updates": {
