@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { StyleSheet, Text, View, TextInput, ImageBackground, Image, ScrollView, Alert } from 'react-native';
 import { Icon, Button, Container, Header, Content, Left, Body, Right, Card, CardItem, } from 'native-base'
 import { AntDesign, MaterialIcons, FontAwesome, Ionicons, Fontisto } from '@expo/vector-icons';

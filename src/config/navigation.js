@@ -51,7 +51,6 @@ const MyDrawerNavigator = createDrawerNavigator({
     crimeInfo: {
         screen: CrimeInfoScreen,
     },
-
     AllRobHistories: {
         screen: AllRobHistories
     },
@@ -145,8 +144,6 @@ const HomeNavigation = createStackNavigator(
         Auth: { screen: AuthScreen },
         Home: { screen: HomeScreen },
         CrimeInfo: { screen: MyDrawerNavigator },
-
-
     },
     {
         initialRouteName: 'Auth',

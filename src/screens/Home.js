@@ -426,7 +426,7 @@ class HomeScreen extends Component {
                         },
                         body: JSON.stringify({
                             to: TokenArr[i],
-                            body: "Avoid Location: St#" + " " + `${locationcoords[0].street}` + ", " + locationcoords[0].city,
+                            body: "Please avoid street - " + " " + `${locationcoords[0].street}` + ", " + locationcoords[0].city,
                             sound: 'default',
 
                         })

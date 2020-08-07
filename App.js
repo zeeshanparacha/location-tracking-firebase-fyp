@@ -1,5 +1,5 @@
-import React from 'react';
-import { StyleSheet, Text, View, Platform } from 'react-native';
+import React, { Component, Fragment } from 'react';
+import { StyleSheet, Text, View, Platform, SafeAreaView } from 'react-native';
 import { StatusBar } from 'react-native';
 import Navigation from './src/config/navigation'
 import Constants from 'expo-constants';
@@ -8,16 +8,17 @@ import Constants from 'expo-constants';
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <StatusBar
-        backgroundColor="#2e363d"
-        barStyle="light-content"
-        hidden={false}
-        translucent={true}
-        networkActivityIndicatorVisible={true}
-      />
-      <Navigation />
-    </View>
+    <Fragment>
+      <View style={{ backgroundColor: "#2e363d" }}>
+        <StatusBar
+          backgroundColor="#2e363d"
+          barStyle="light-content"
+        />
+      </View>
+      <View style={styles.container}>
+        <Navigation />
+      </View>
+    </Fragment>
   );
 }
 
